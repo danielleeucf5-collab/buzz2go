@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://buzz2go.pages.dev/sitemap.xml

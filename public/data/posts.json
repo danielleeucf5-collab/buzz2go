@@ -1,0 +1,38 @@
+[
+  {
+    "title": "Buzz2Go가 시작되었습니다",
+    "slug": "buzz2go-launch",
+    "category": "공지",
+    "summary": "Cloudflare Pages, GitHub, Python으로 운영하는 트렌드 뉴스 사이트의 첫 번째 글입니다.",
+    "content": [
+      "Buzz2Go는 사람들이 많이 찾는 주제를 빠르게 발견하고, 여러 출처를 확인해 핵심 내용을 읽기 쉽게 정리하는 프로젝트입니다.",
+      "이 스타터 키트는 정적 HTML을 생성하므로 서버 관리 부담이 작고, GitHub에 변경사항을 올리면 Cloudflare Pages가 자동으로 배포합니다.",
+      "실제 뉴스 자동화에서는 출처 확인, 중복 방지, 민감 주제 검토 절차를 반드시 추가해야 합니다."
+    ],
+    "published_at": "2026-08-01T07:00:00+08:00",
+    "sources": [
+      {
+        "name": "Buzz2Go Project",
+        "url": "https://buzz2go.pages.dev"
+      }
+    ]
+  },
+  {
+    "title": "오늘의 AI 트렌드를 읽는 세 가지 기준",
+    "slug": "three-ways-to-read-ai-trends",
+    "category": "AI",
+    "summary": "검색량, 출처 신뢰도, 실제 영향이라는 세 가지 기준으로 AI 트렌드를 해석합니다.",
+    "content": [
+      "검색량이 급증했다는 사실만으로 중요한 뉴스라고 단정할 수는 없습니다. 일시적인 논란이나 오해 때문에 검색이 증가할 수도 있기 때문입니다.",
+      "따라서 Buzz2Go는 검색 증가폭뿐 아니라 신뢰할 수 있는 출처가 몇 개인지, 실제 사용자와 산업에 어떤 영향을 주는지를 함께 확인하도록 설계합니다.",
+      "자동 생성된 초안은 사실관계와 링크를 검토한 뒤 게시하는 방식이 가장 안전합니다."
+    ],
+    "published_at": "2026-08-01T07:10:00+08:00",
+    "sources": [
+      {
+        "name": "Sample editorial guide",
+        "url": "https://buzz2go.pages.dev"
+      }
+    ]
+  }
+]

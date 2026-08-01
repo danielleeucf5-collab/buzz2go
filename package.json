@@ -1,0 +1,10 @@
+{
+  "name": "buzz2go-starter",
+  "private": true,
+  "scripts": {
+    "serve": "npx serve public"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}
