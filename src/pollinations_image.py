@@ -3,12 +3,11 @@ from __future__ import annotations
 import hashlib
 import os
 from pathlib import Path
-from urllib.parse import quote
 
 import requests
 
 
-POLLINATIONS_IMAGE_URL = "https://gen.pollinations.ai/image"
+POLLINATIONS_IMAGE_URL = "https://gen.pollinations.ai/v1/images/generations"
 
 
 def generate_article_image(article: dict, public_dir: Path) -> dict[str, str] | None:
@@ -32,29 +31,46 @@ def generate_article_image(article: dict, public_dir: Path) -> dict[str, str] | 
     seed = int(hashlib.sha256(slug.encode("utf-8")).hexdigest()[:8], 16)
 
     try:
-        response = requests.get(
-            f"{POLLINATIONS_IMAGE_URL}/{quote(prompt, safe='')}",
-            params={
+        response = requests.post(
+            POLLINATIONS_IMAGE_URL,
+            json={
+                "prompt": prompt,
                 "model": model,
-                "width": 1200,
-                "height": 675,
-                "seed": seed,
-                "safe": "true",
+                "size": "1200x675",
+                "quality": "medium",
+                "response_format": "url",
+                "safe": True,
+                "user": f"buzz2go-{seed}",
             },
-            headers={"Authorization": f"Bearer {api_key}"},
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
             timeout=180,
         )
         response.raise_for_status()
-        content_type = response.headers.get("content-type", "").lower()
+        payload = response.json()
+        image_url = payload.get("data", [{}])[0].get("url", "")
+        if not image_url:
+            raise RuntimeError("응답에 이미지 URL이 없습니다.")
+
+        image_response = requests.get(image_url, timeout=60)
+        image_response.raise_for_status()
+        content_type = image_response.headers.get("content-type", "").lower()
         if not content_type.startswith("image/"):
             raise RuntimeError(f"이미지가 아닌 응답을 받았습니다: {content_type}")
 
+        extension = {
+            "image/png": "png",
+            "image/webp": "webp",
+        }.get(content_type.split(";")[0], "jpg")
+
         images_dir = public_dir / "images"
         images_dir.mkdir(parents=True, exist_ok=True)
-        image_path = images_dir / f"{slug}.jpg"
-        image_path.write_bytes(response.content)
+        image_path = images_dir / f"{slug}.{extension}"
+        image_path.write_bytes(image_response.content)
         return {
-            "image_url": f"/images/{slug}.jpg",
+            "image_url": f"/images/{slug}.{extension}",
             "image_alt": f"{title} 기사 대표 AI 일러스트",
             "image_credit": "AI-generated with Pollinations.ai",
         }
