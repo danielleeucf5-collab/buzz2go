@@ -30,7 +30,8 @@ def configure_console() -> None:
 def load_posts() -> list[dict]:
     if not DATA_FILE.exists():
         return []
-    return json.loads(DATA_FILE.read_text(encoding="utf-8"))
+    # utf-8-sig accepts both ordinary UTF-8 and files containing a BOM.
+    return json.loads(DATA_FILE.read_text(encoding="utf-8-sig"))
 
 
 def save_posts(posts: list[dict]) -> None:
