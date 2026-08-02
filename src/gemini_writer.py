@@ -25,10 +25,10 @@ ARTICLE_SCHEMA: dict[str, Any] = {
         },
         "content": {
             "type": "array",
-            "description": "도입, 핵심 내용, 영향, 주의점, 전망, 결론을 포함한 기사 본문",
+            "description": "소제목은 '## '로 시작하고 나머지는 본문 문단인 상세 기사",
             "items": {"type": "string"},
-            "minItems": 6,
-            "maxItems": 12,
+            "minItems": 10,
+            "maxItems": 24,
         },
         "publish": {"type": "boolean"},
         "rejection_reason": {"type": "string"},
@@ -146,10 +146,13 @@ def _validate_article(data: Any) -> dict[str, Any]:
         if str(paragraph).strip()
     ]
 
-    if len(content) < 6:
-        raise ValueError("기사 본문은 최소 6개 문단이어야 합니다.")
-    if len("".join(content)) < 1000:
-        raise ValueError("기사 본문은 공백 제외 1,000자 이상이어야 합니다.")
+    if len(content) < 10:
+        raise ValueError("기사 본문은 소제목을 포함해 최소 10개 항목이어야 합니다.")
+    article_text = "".join(
+        paragraph for paragraph in content if not paragraph.startswith("## ")
+    )
+    if len(article_text) < 1500:
+        raise ValueError("기사 본문은 소제목 제외 공백 포함 1,500자 이상이어야 합니다.")
 
     sources = data["sources"]
     if not isinstance(sources, list) or len(sources) < 3:
@@ -173,7 +176,7 @@ def _validate_article(data: Any) -> dict[str, Any]:
         "title": title,
         "category": category,
         "summary": summary,
-        "content": content[:12],
+        "content": content[:24],
         "selected_trend": str(data["selected_trend"]).strip(),
         "selection_reason": str(data["selection_reason"]).strip(),
         "trend_score": score,
@@ -264,14 +267,20 @@ def write_article(
 
 [기사 작성]
 1. 제목은 과장 없이 핵심 변화를 담아 35~55자 내외로 작성합니다.
-2. 본문은 공백 제외 최소 1,000자, 권장 1,500~2,000자로 작성합니다.
-3. content 문단 배열에 도입부, 확인된 핵심 내용, 사용자·산업·한국 시장 영향,
-   주의할 점, 전망, 결론을 순서대로 담습니다.
-4. 검색량 증가와 실제 뉴스 가치를 구분하고 단기 영향과 중장기 영향을 나눕니다.
-5. 짧은 문단과 쉬운 한국어를 사용하며 번역투, 반복, 홍보성·감정적 표현을 피합니다.
-6. 출처에 없는 사실·수치를 만들지 말고 근거 없는 전망을 하지 않습니다.
-7. sources에는 위에 제공된 URL만 사용해 실제로 확인한 자료를 3개 이상 기록합니다.
-8. summary는 핵심을 1~2문장으로 정리하고 출력은 지정된 JSON 스키마만 따릅니다.
+2. 본문은 최소 1,500자, 권장 1,800~2,800자로 충분히 상세하게 작성합니다.
+3. 도입부는 2~3개의 짧은 문단으로 사건과 독자가 알아야 할 이유를 설명합니다.
+4. 날짜, 장소, 결과, 일정 등 핵심 정보는 확인된 항목만 별도 문단으로 명확히 정리합니다.
+5. content 배열에서 소제목은 반드시 '## '로 시작합니다. 소제목 다음에는 2~4개의
+   짧은 설명 문단을 배치하며 전체 소제목은 4~7개로 구성합니다.
+6. 핵심 경과, 주요 인물·기업의 역할, 사용자·산업·한국 독자 영향, 주의점,
+   향후 일정과 전망, 결론을 자연스러운 순서로 다룹니다.
+7. 검색량 증가와 실제 뉴스 가치를 구분하고 단기 영향과 중장기 영향을 나눕니다.
+8. 모바일에서 읽기 쉽게 한 문단에 하나의 핵심만 담고 번역투와 반복을 피합니다.
+9. 선정적·홍보성·감정적 표현이나 출처에 없는 사실·수치, 확정적 전망을 쓰지 않습니다.
+10. 동일한 의미를 표현만 바꿔 반복하지 말고, 각 문단에 새로운 정보나 분석을 담습니다.
+11. sources에는 위에 제공된 URL만 사용해 실제 확인한 자료를 3개 이상 기록합니다.
+12. keywords는 핵심 검색어 5~10개, hashtags는 '#'로 시작하는 8~12개 항목으로 작성합니다.
+13. summary는 핵심을 1~2문장으로 정리하고 출력은 지정된 JSON 스키마만 따릅니다.
 """.strip()
 
     response = None

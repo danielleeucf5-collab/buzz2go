@@ -63,10 +63,14 @@ def main() -> None:
             topics = []
 
         existing_titles = {p.get("title", "") for p in posts}
+        existing_topics = {
+            str(p.get("selected_trend", "")).strip().casefold()
+            for p in posts if p.get("selected_trend")
+        }
         candidates: list[dict] = []
         for topic in topics:
             query = topic["query"]
-            if query in existing_titles:
+            if query in existing_titles or query.strip().casefold() in existing_topics:
                 continue
 
             try:

@@ -71,6 +71,7 @@ nav{display:flex;gap:18px;font-weight:700;font-size:14px}
 .article h1{font-size:clamp(34px,5vw,58px);line-height:1.2;margin:18px 0}
 .article .lead{font-size:20px;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:28px}
 .article-body p{font-size:18px;margin:24px 0}
+.article-body h2{font-size:28px;line-height:1.35;margin:48px 0 16px}.hashtags{margin:36px 0;color:var(--accent);font-weight:700;line-height:2}
 .article-image{margin:28px 0}.article-image img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:18px}.article-image figcaption{margin-top:8px;color:var(--muted);font-size:13px}
 .card-image{display:block;margin:-2px -2px 18px}.card-image img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px}
 .sources{margin-top:46px;padding-top:24px;border-top:1px solid var(--line)}

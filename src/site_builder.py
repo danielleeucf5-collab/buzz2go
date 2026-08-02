@@ -72,7 +72,15 @@ def build_site(posts: list[dict], public_dir: Path, site_url: str) -> None:
             for src in post["sources"]
         ) or "<li>등록된 출처가 없습니다. 공개 전 확인이 필요합니다.</li>"
 
-        paragraphs = "".join(f"<p>{esc(p)}</p>" for p in post["content"])
+        paragraphs = "".join(
+            f"<h2>{esc(p[3:])}</h2>" if p.startswith("## ") else f"<p>{esc(p)}</p>"
+            for p in post["content"]
+        )
+        hashtags = " ".join(esc(tag) for tag in post.get("hashtags", []))
+        hashtag_html = (
+            f'<div class="hashtags" aria-label="기사 해시태그">{hashtags}</div>'
+            if hashtags else ""
+        )
         canonical = f"{site_url.rstrip('/')}/posts/{quote(post['slug'])}.html"
         hero_image = ""
         if post["image_url"]:
@@ -102,6 +110,7 @@ def build_site(posts: list[dict], public_dir: Path, site_url: str) -> None:
     <div class="meta">{esc(format_date(post["published_at"]))}</div>
     {hero_image}
     <div class="article-body">{paragraphs}</div>
+    {hashtag_html}
     <section class="sources"><h2>출처</h2><ul>{source_items}</ul></section>
   </article>
 </main>
