@@ -9,7 +9,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from src.fetch_trends import fetch_trending_topics
+from src.fetch_trends import fetch_news_sources, fetch_trending_topics
 from src.gemini_writer import write_article
 from src.site_builder import build_site, slugify
 
@@ -67,10 +67,19 @@ def main() -> None:
             if query in existing_titles:
                 continue
 
-            sources = [{
-                "name": "Google Trends via SerpAPI",
-                "url": "https://trends.google.com/",
-            }]
+            try:
+                sources = fetch_news_sources(query)
+            except Exception as exc:
+                print(
+                    f"[SerpAPI] '{query}' 관련 뉴스 수집 실패: "
+                    f"{type(exc).__name__}: {exc}",
+                    file=sys.stderr,
+                )
+                continue
+            independent_names = {source["name"] for source in sources}
+            if len(sources) < 3 or len(independent_names) < 2:
+                print(f"[SerpAPI] '{query}' 기사 제외: 검증 가능한 출처 부족")
+                continue
             try:
                 article = write_article(query, sources=sources)
             except Exception as exc:
