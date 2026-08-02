@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -16,6 +17,14 @@ from src.site_builder import build_site, slugify
 ROOT = Path(__file__).resolve().parent
 DATA_FILE = ROOT / "data" / "posts.json"
 PUBLIC_DIR = ROOT / "public"
+
+
+def configure_console() -> None:
+    """Use UTF-8 for Korean status messages, especially on Windows."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure:
+            reconfigure(encoding="utf-8", errors="replace")
 
 
 def load_posts() -> list[dict]:
@@ -32,6 +41,7 @@ def save_posts(posts: list[dict]) -> None:
 
 
 def main() -> None:
+    configure_console()
     parser = argparse.ArgumentParser()
     parser.add_argument("--sample", action="store_true", help="API 호출 없이 사이트만 생성")
     args = parser.parse_args()
@@ -41,25 +51,47 @@ def main() -> None:
 
     if not args.sample:
         limit = int(os.getenv("MAX_TOPICS", "5"))
-        topics = fetch_trending_topics(limit=limit)
+        try:
+            topics = fetch_trending_topics(limit=limit)
+        except Exception as exc:
+            print(
+                f"[SerpAPI] 트렌드 수집 실패: {type(exc).__name__}: {exc}",
+                file=sys.stderr,
+            )
+            topics = []
 
         existing_titles = {p.get("title", "") for p in posts}
+        candidates: list[dict] = []
         for topic in topics:
             query = topic["query"]
             if query in existing_titles:
                 continue
 
-            article = write_article(query)
+            sources = [{
+                "name": "Google Trends via SerpAPI",
+                "url": "https://trends.google.com/",
+            }]
+            try:
+                article = write_article(query, sources=sources)
+            except Exception as exc:
+                print(
+                    f"[Gemini] '{query}' 기사 생성 실패: "
+                    f"{type(exc).__name__}: {exc}",
+                    file=sys.stderr,
+                )
+                continue
             if not article:
                 continue
 
-            article["slug"] = slugify(article["title"])
-            article["published_at"] = datetime.now().astimezone().isoformat(timespec="seconds")
-            article["sources"] = [{
-                "name": "Google Trends via SerpAPI",
-                "url": "https://trends.google.com/"
-            }]
-            posts.append(article)
+            candidates.append(article)
+
+        if candidates:
+            article = max(candidates, key=lambda item: item.get("trend_score", 0))
+            if article["title"] not in existing_titles:
+                article["slug"] = slugify(article["title"])
+                article["published_at"] = datetime.now().astimezone().isoformat(timespec="seconds")
+                article.setdefault("sources", sources)
+                posts.append(article)
 
         if topics:
             save_posts(posts)

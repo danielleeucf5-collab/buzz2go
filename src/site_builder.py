@@ -64,7 +64,8 @@ def build_site(posts: list[dict], public_dir: Path, site_url: str) -> None:
 
         source_items = "".join(
             f'<li><a href="{esc(src.get("url", "#"))}" target="_blank" rel="noopener noreferrer">'
-            f'{esc(src.get("name", "출처"))}</a></li>'
+            f'{esc(src.get("name", "출처"))} — {esc(src.get("title", "원문"))}</a>'
+            f'{" (" + esc(src.get("published_at")) + ")" if src.get("published_at") else ""}</li>'
             for src in post["sources"]
         ) or "<li>등록된 출처가 없습니다. 공개 전 확인이 필요합니다.</li>"
 

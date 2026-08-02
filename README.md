@@ -30,7 +30,8 @@ python run_pipeline.py --sample
 ```env
 SERPAPI_KEY=...
 GEMINI_API_KEY=...
-GEMINI_MODEL=gemini-2.5-flash
+GEMINI_API_KEY_2=...
+GEMINI_TEXT_MODEL=gemini-3.6-flash
 TREND_GEO=TW
 SITE_URL=https://buzz2go.pages.dev
 ```
