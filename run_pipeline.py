@@ -96,7 +96,7 @@ def main() -> None:
         if topics:
             save_posts(posts)
 
-    site_url = os.getenv("SITE_URL", "https://buzz2go.pages.dev")
+    site_url = os.getenv("SITE_URL", "https://buzz2go.danielleeucf5.workers.dev")
     build_site(posts, PUBLIC_DIR, site_url)
     print(f"완료: {len(posts)}개 기사, 출력 폴더={PUBLIC_DIR}")
 

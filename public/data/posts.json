@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "title": "Buzz2Go가 시작되었습니다",
     "slug": "buzz2go-launch",
@@ -13,7 +13,7 @@
     "sources": [
       {
         "name": "Buzz2Go Project",
-        "url": "https://buzz2go.pages.dev"
+        "url": "https://buzz2go.danielleeucf5.workers.dev"
       }
     ]
   },
@@ -31,7 +31,7 @@
     "sources": [
       {
         "name": "Sample editorial guide",
-        "url": "https://buzz2go.pages.dev"
+        "url": "https://buzz2go.danielleeucf5.workers.dev"
       }
     ]
   }

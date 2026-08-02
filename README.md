@@ -33,7 +33,7 @@ GEMINI_API_KEY=...
 GEMINI_API_KEY_2=...
 GEMINI_TEXT_MODEL=gemini-3.6-flash
 TREND_GEO=TW
-SITE_URL=https://buzz2go.pages.dev
+SITE_URL=https://buzz2go.danielleeucf5.workers.dev
 ```
 
 API 키는 절대 GitHub에 올리지 마세요. `.env`는 `.gitignore`에 포함되어 있습니다.
