@@ -20,7 +20,7 @@ def fetch_trending_topics(limit: int = 5) -> list[dict[str, Any]]:
     params = {
         "engine": "google_trends_trending_now",
         "api_key": api_key,
-        "geo": os.getenv("TREND_GEO", "TW"),
+        "geo": os.getenv("TREND_GEO", "KR"),
         "hl": os.getenv("TREND_LANGUAGE", "ko"),
     }
 
@@ -88,7 +88,7 @@ def fetch_news_sources(query: str, limit: int = 6) -> list[dict[str, str]]:
         "engine": "google_news",
         "api_key": api_key,
         "q": query.strip(),
-        "gl": os.getenv("TREND_GEO", "TW").lower(),
+        "gl": os.getenv("TREND_GEO", "KR").lower(),
         "hl": os.getenv("TREND_LANGUAGE", "ko").lower(),
     }
     response = requests.get(SERPAPI_URL, params=params, timeout=30)
