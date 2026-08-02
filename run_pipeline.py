@@ -102,9 +102,13 @@ def main() -> None:
                 article["slug"] = slugify(article["title"])
                 article["published_at"] = datetime.now().astimezone().isoformat(timespec="seconds")
                 article.setdefault("sources", sources)
-                image_data = generate_article_image(article, PUBLIC_DIR)
-                if image_data:
-                    article.update(image_data)
+                images_enabled = os.getenv(
+                    "GENERATE_ARTICLE_IMAGES", "false"
+                ).strip().lower() in {"1", "true", "yes", "on"}
+                if images_enabled:
+                    image_data = generate_article_image(article, PUBLIC_DIR)
+                    if image_data:
+                        article.update(image_data)
                 posts.append(article)
 
         if topics:

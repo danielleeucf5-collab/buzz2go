@@ -30,6 +30,7 @@ jobs:
           GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
           POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
           POLLINATIONS_IMAGE_MODEL: nanobanana
+          GENERATE_ARTICLE_IMAGES: "false"
           GEMINI_TEXT_MODEL: gemini-3.6-flash
           TREND_GEO: KR
           TREND_LANGUAGE: ko
