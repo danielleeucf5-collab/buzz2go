@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 
 from src.fetch_trends import fetch_news_sources, fetch_trending_topics
 from src.gemini_writer import write_article
+from src.pollinations_image import generate_article_image
 from src.site_builder import build_site, slugify
 
 
@@ -101,6 +102,9 @@ def main() -> None:
                 article["slug"] = slugify(article["title"])
                 article["published_at"] = datetime.now().astimezone().isoformat(timespec="seconds")
                 article.setdefault("sources", sources)
+                image_data = generate_article_image(article, PUBLIC_DIR)
+                if image_data:
+                    article.update(image_data)
                 posts.append(article)
 
         if topics:

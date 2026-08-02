@@ -59,6 +59,9 @@ def build_site(posts: list[dict], public_dir: Path, site_url: str) -> None:
         post.setdefault("summary", "")
         post.setdefault("content", [])
         post.setdefault("sources", [])
+        post.setdefault("image_url", "")
+        post.setdefault("image_alt", "")
+        post.setdefault("image_credit", "")
         post.setdefault("published_at", now.isoformat(timespec="seconds"))
         normalized.append(post)
 
@@ -71,6 +74,13 @@ def build_site(posts: list[dict], public_dir: Path, site_url: str) -> None:
 
         paragraphs = "".join(f"<p>{esc(p)}</p>" for p in post["content"])
         canonical = f"{site_url.rstrip('/')}/posts/{quote(post['slug'])}.html"
+        hero_image = ""
+        if post["image_url"]:
+            hero_image = (
+                f'<figure class="article-image"><img src="{esc(post["image_url"])}" '
+                f'alt="{esc(post["image_alt"])}" loading="eager">'
+                f'<figcaption>{esc(post["image_credit"])}</figcaption></figure>'
+            )
 
         article_html = f'''<!doctype html>
 <html lang="ko">
@@ -90,6 +100,7 @@ def build_site(posts: list[dict], public_dir: Path, site_url: str) -> None:
     <h1>{esc(post["title"])}</h1>
     <p class="lead">{esc(post["summary"])}</p>
     <div class="meta">{esc(format_date(post["published_at"]))}</div>
+    {hero_image}
     <div class="article-body">{paragraphs}</div>
     <section class="sources"><h2>출처</h2><ul>{source_items}</ul></section>
   </article>
@@ -106,6 +117,7 @@ def build_site(posts: list[dict], public_dir: Path, site_url: str) -> None:
     )
     cards = "".join(
         f'''<article class="card" data-card="{esc(p["category"])}">
+  {f'<a class="card-image" href="/posts/{esc(p["slug"])}.html"><img src="{esc(p["image_url"])}" alt="{esc(p["image_alt"])}" loading="lazy"></a>' if p.get("image_url") else ""}
   <span class="badge">{esc(p["category"])}</span>
   <h3><a href="/posts/{esc(p["slug"])}.html">{esc(p["title"])}</a></h3>
   <p>{esc(p["summary"])}</p>
